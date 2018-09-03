@@ -10,11 +10,10 @@ cursor, conn = db.connection(app)
 @app.route('/login', methods=('GET', 'POST'))
 def index():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form.getlist('email')
+        password = request.form.getlist('password')
         error = None
         user = cursor.execute('SELECT * FROM auth WHERE email = ?', (email)).fetchone()
-
         if user is None:
             error = 'Incorrect username.'
         elif not user['password'] == password:
