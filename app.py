@@ -11,19 +11,7 @@ cursor, conn = db.connection(app)
 def index():
     cursor.execute('SELECT * FROM auth')
     users = cursor.fetchall()
-    if users:
-        all_users = []
-        for i in users:
-            tmp_user = {
-                'id': i[0],
-                'email': i[1],
-                'name': i[2],
-                'password': i[3]
-            }
-            all_users.append(tmp_user)
-        return make_response(jsonify(all_users), 200)
-    else:
-        return make_response(jsonify({'message': 'Its something went wrong'}), 400)
+    return render_template('login.html')
 
 if __name__ == '__main__':
     app.debug = config.debug
