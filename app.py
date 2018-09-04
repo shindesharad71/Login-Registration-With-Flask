@@ -19,13 +19,13 @@ def index():
         # print(user)
         if user is None:
             error = 'Incorrect username.'
-        elif not user['password'] == password:
+        elif not user[3] == password:
             error = 'Incorrect password.'
 
         if error is None:
             session.clear()
-            session['user_id'] = user['id']
-            return redirect(url_for('/home'))
+            session['user_id'] = user[0]
+            return redirect(url_for('home'))
         flash(error)
     return render_template('login.html')
 
