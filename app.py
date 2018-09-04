@@ -7,8 +7,14 @@ app = Flask(__name__)
 
 cursor, conn = db.connection(app)
 
+
 @app.route('/login', methods=('GET', 'POST'))
 def index():
+    if request.method == 'GET':
+        if 'user_id' in session:
+            app.logger.debug(session['user_id'])
+            return redirect(url_for('home'))
+    return render_template('login.html')
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -16,7 +22,6 @@ def index():
         cursor.execute('SELECT * FROM auth WHERE email=%s', (email))
         user = cursor.fetchone()
         app.logger.debug(user)
-        # print(user)
         if user is None:
             error = 'Incorrect username.'
         elif not user[3] == password:
@@ -29,9 +34,11 @@ def index():
         flash(error)
     return render_template('login.html')
 
+
 @app.route('/home')
 def home():
     return render_template('home.html')
+
 
 if __name__ == '__main__':
     app.debug = config.debug
