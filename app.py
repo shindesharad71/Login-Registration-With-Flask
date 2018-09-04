@@ -9,7 +9,7 @@ cursor, conn = db.connection(app)
 
 
 @app.route('/login', methods=('GET', 'POST'))
-def index():
+def login():
     if request.method == 'GET':
         if 'user_id' in session:
             app.logger.debug(session['user_id'])
@@ -35,10 +35,17 @@ def index():
     return render_template('login.html')
 
 
+@app.route('/')
+def index():
+    if request.method == 'GET':
+        if 'user_id' in session: return redirect(url_for('home'))
+    return redirect(url_for('login'))
+
 @app.route('/home')
 def home():
+    if request.method == 'GET':
+        if 'user_id' not in session: return redirect(url_for('login'))
     return render_template('home.html')
-
 
 if __name__ == '__main__':
     app.debug = config.debug
