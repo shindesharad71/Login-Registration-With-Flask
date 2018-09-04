@@ -13,8 +13,10 @@ def index():
         email = request.form['email']
         password = request.form['password']
         error = None
-        user = cursor.execute('SELECT * FROM auth WHERE email = ?', (email)).fetchone()
-        print(user)
+        cursor.execute('SELECT * FROM auth WHERE email=%s', (email))
+        user = cursor.fetchone()
+        app.logger.debug(user)
+        # print(user)
         if user is None:
             error = 'Incorrect username.'
         elif not user['password'] == password:
