@@ -14,7 +14,7 @@ def login():
         if 'user_id' in session:
             app.logger.debug(session['user_id'])
             return redirect(url_for('home'))
-    return render_template('login.html')
+        return render_template('login.html')
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -32,19 +32,21 @@ def login():
             session['user_id'] = user[0]
             return redirect(url_for('home'))
         flash(error)
-    return render_template('login.html')
+        return render_template('login.html')
 
 
 @app.route('/')
 def index():
     if request.method == 'GET':
-        if 'user_id' in session: return redirect(url_for('home'))
+        if 'user_id' in session:
+            return redirect(url_for('home'))
     return redirect(url_for('login'))
 
 @app.route('/home')
 def home():
     if request.method == 'GET':
-        if 'user_id' not in session: return redirect(url_for('login'))
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
     return render_template('home.html')
 
 if __name__ == '__main__':
