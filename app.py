@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, Blueprint, flash, g, redirect, session, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
 import db
 import jwt
 import config
+import hashlib
 
 app = Flask(__name__)
 
@@ -24,7 +26,7 @@ def login():
         app.logger.debug(user)
         if user is None:
             error = 'Incorrect username.'
-        elif not user[3] == password:
+        elif not check_password_hash(user[3], password):
             error = 'Incorrect password.'
 
         if error is None:
@@ -47,17 +49,18 @@ def register():
         password = request.form['password']
         confirm = request.form['confirm']
         error = None
-        if password == confirm:
-            error = 'password and conform password does not match'
+        if password != confirm:
+            error = 'password and confirm password does not match'
         else:
             cursor.execute('SELECT * FROM auth WHERE email=%s', (email))
             user = cursor.fetchone()
             app.logger.debug(user)
             if user:
-                error = 'Email already exist'
+                error = 'Sorry, email already exist!'
 
         if error is None:
-            cursor.execute('INSERT into users (name, email, password) VALUES (%s,%s,%s)', (name, email, password))
+            password = generate_password_hash(password)
+            cursor.execute('INSERT into auth (name, email, password) VALUES (%s,%s,%s)', (name, email, password))
             user = cursor.fetchone()
             conn.commit()
             if cursor.lastrowid:
