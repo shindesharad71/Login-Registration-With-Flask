@@ -34,6 +34,40 @@ def login():
         flash(error)
         return render_template('login.html', title='Login')
 
+@app.route('/register', methods=('GET', 'POST'))
+def register():
+    if request.method == 'GET':
+        if 'user_id' in session:
+            app.logger.debug(session['user_id'])
+            return redirect(url_for('home'))
+        return render_template('register.html', title='Register')
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+        confirm = request.form['confirm']
+        error = None
+        if password == confirm:
+            error = 'password and conform password does not match'
+        else:
+            cursor.execute('SELECT * FROM auth WHERE email=%s', (email))
+            user = cursor.fetchone()
+            app.logger.debug(user)
+            if user:
+                error = 'Email already exist'
+
+        if error is None:
+            cursor.execute('INSERT into users (name, email, password) VALUES (%s,%s,%s)', (name, email, password))
+            user = cursor.fetchone()
+            conn.commit()
+            if cursor.lastrowid:
+                flash('Registration successfull!, login now!')
+                return redirect(url_for('login'))
+            else:
+                flash('Something went wrong, try again!')
+                return render_template('register.html', title='Register')
+        flash(error)
+        return render_template('register.html', title='Register')
 
 @app.route('/')
 def index():

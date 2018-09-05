@@ -67,6 +67,8 @@
 }
 
 .form-signin #inputEmail,
+.form-signin #inputName,
+.form-signin #inputConfirmPassword,
 .form-signin #inputPassword {
     direction: ltr;
     height: 44px;
