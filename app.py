@@ -42,6 +42,7 @@ def index():
             return redirect(url_for('home'))
     return redirect(url_for('login'))
 
+
 @app.route('/home')
 def home():
     if request.method == 'GET':
@@ -51,6 +52,14 @@ def home():
     user = cursor.fetchone()
     name = user[2]
     return render_template('home.html', title=name, name=name)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    flash('You have successfully logged out.')
+    return redirect('/login')
+
 
 if __name__ == '__main__':
     app.debug = config.debug
