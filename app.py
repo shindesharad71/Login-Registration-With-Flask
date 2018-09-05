@@ -32,7 +32,7 @@ def login():
             session['user_id'] = user[0]
             return redirect(url_for('home'))
         flash(error)
-        return render_template('login.html')
+        return render_template('login.html', title='Login')
 
 
 @app.route('/')
@@ -47,7 +47,10 @@ def home():
     if request.method == 'GET':
         if 'user_id' not in session:
             return redirect(url_for('login'))
-    return render_template('home.html')
+    cursor.execute('SELECT * FROM auth WHERE id=%s', (session['user_id']))
+    user = cursor.fetchone()
+    name = user[2]
+    return render_template('home.html', title=name, name=name)
 
 if __name__ == '__main__':
     app.debug = config.debug

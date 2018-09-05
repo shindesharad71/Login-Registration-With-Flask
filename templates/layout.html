@@ -15,9 +15,9 @@
     <div class="container text-center">
         {% block title %}{% endblock %}
     </div>
-    <div class="container">
+    <div class="container text-center">
         {% with messages = get_flashed_messages() %} {% if messages %}
-        <ul class=flashes>
+        <ul class="col-md-offset-4 col-md-4 alert alert-danger" style="list-style-type: none !important;">
             {% for message in messages %}
             <li>{{ message }}</li>
             {% endfor %}
